@@ -1,0 +1,64 @@
+/.venv
+
+
+# Pickle files for local component libraries, for fast loading
+/lib_pickle_dir
+
+
+# Skidl log files
+skidl.*
+
+__pycache__/
+
+skidl-test-legacy/
+
+# Logs
+/logs
+/dataset_preparation/logs
+
+# KiCAD project auxiliary files (auto save and lock files)
+*.zip
+*.lck
+
+*.json
+*.jsonl
+
+gptoss_training/gpt-oss-20b-multilingual-reasoner
+gptoss_training/gpt-oss-20b-pcb-schematic
+gpt-oss-20b-multilingual-reasoner
+gpt-oss-20b-pcb-schematic
+gpt-oss-20b-pcb-schematic*/
+
+finetune_dataset_block.jsonlfinetune_dataset_sch_definite_wires.jsonl
+finetune_dataset_block.jsonl
+*.log
+
+
+blob_mount_amulet
+
+blob_new_mnt
+
+export*.log
+export
+
+
+## Training files
+# training artifacts
+**/checkpoint-*/
+**/*.pt
+**/*.safetensors
+**/*.out
+**/*.log
+
+# common ML junk
+**/__pycache__/
+**/*.pyc
+wandb/
+runs/
+outputs/
+*.ckpt
+
+
+/.cache
+/.cache_symbol_index
+.DS_Store
