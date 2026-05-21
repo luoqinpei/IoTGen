@@ -204,7 +204,7 @@ The dataset is available on Huggingface at [microsoft/SchGen_dataset](https://hu
 python ./PCB_Schematic_Generation/generate.py --test_raw --prompt {User_Request}
 ```
 
-The shcematic generation model is loaded from [microsoft/SchGen](https://huggingface.co/datasets/microsoft/SchGen) by assigning PEFT model id as ``peft_model_id = "microsoft/SchGen"`` in ``./PCB_Schematic_Generation/generate.py``.
+The shcematic generation model is loaded from [microsoft/SchGen](https://huggingface.co/microsoft/SchGen) by assigning PEFT model id as ``peft_model_id = "microsoft/SchGen"`` in ``./PCB_Schematic_Generation/generate.py``.
 The default path of generated Python code representation of the schematic is at ``./PCB_Schematic_Generation/generated.py``, but you can replace it with your own path.
 
 After generating the code, you can create the project and the corresponding schematic by executing
