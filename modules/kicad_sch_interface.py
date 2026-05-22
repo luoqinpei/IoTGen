@@ -21,6 +21,8 @@ from difflib import SequenceMatcher
 import uuid
 from pathlib import Path
 
+import re
+
 def append_kicad_wire_raw(sch_path, start_pos, end_pos):
     p = Path(sch_path)
     txt = p.read_text(encoding="utf-8")
@@ -39,14 +41,14 @@ def append_kicad_wire_raw(sch_path, start_pos, end_pos):
     )
 '''
 
-    marker = "\n    (sheet_instances"
-    if marker not in txt:
-        marker = "\n\t(sheet_instances"
-
-    if marker not in txt:
+    # Match "(sheet_instances" with any whitespace before it.
+    m = re.search(r'\s*\(sheet_instances\b', txt)
+    if not m:
         raise RuntimeError("Cannot find top-level sheet_instances insertion point.")
 
-    txt = txt.replace(marker, wire_text + marker, 1)
+    insert_pos = m.start()
+    txt = txt[:insert_pos] + "\n" + wire_text + "\n" + txt[insert_pos:]
+
     p.write_text(txt, encoding="utf-8")
 
 def _normalize_sym(s: str) -> str:
