@@ -83,7 +83,7 @@ series = {MobiSys '26}
 
 </detail>
 
-3. <detail>
+3. <details>
     <summary> KiCad v8 installed </summary>
 
     Install version 8.0.9 from [Github KiCad releases](https://github.com/KiCad/kicad-source-mirror/releases) 
@@ -114,7 +114,7 @@ series = {MobiSys '26}
    ```
    Then configure the `freerouting_jar_path` and `freerouting_plugin_path` in `./config.py`.
 
-   </detail>
+   </details>
 
 ### Tests
 
