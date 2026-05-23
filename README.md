@@ -36,7 +36,8 @@ series = {MobiSys '26}
 
     **OpenRouter**: In the ``./config.py``, replace the variable of ``openrouter_api_key`` with your own API key.
 
-2. **Python Environment**
+2. <detail>
+    <summary> Python Environment </summary>
     
     (1) Set up a python virtual environment (Python 3.10 and Conda suggested) for the project. You can refer to the [Tutorial](https://code.visualstudio.com/docs/python/environments).
 
@@ -56,31 +57,34 @@ series = {MobiSys '26}
     (5) The path of Python interpreters used by KiCad on different systems are specified in ``./config.py``. The configurations are based on normal default settings for each OS, but may need to be adjusted based on the user's specific installation paths.
 
 
-**TL;DR**
-All commands to run for setting up the environment below
-```
-# 1) Create and activate the env
-conda create -n [YOUR_CONDA_ENV] python=3.10 -y
-conda activate [YOUR_CONDA_ENV]
+    **TL;DR**
+    All commands to run for setting up the environment below
+    ```
+    # 1) Create and activate the env
+    conda create -n [YOUR_CONDA_ENV] python=3.10 -y
+    conda activate [YOUR_CONDA_ENV]
 
-# 2) Install deps
-pip install --upgrade pip
-pip install -r requirements.txt
+    # 2) Install deps
+    pip install --upgrade pip
+    pip install -r requirements.txt
 
-# 3) Set PROJECT_PATH of Conda environment
-conda env config vars set PROJECT_PATH={YOUR_PROJECT_PATH} && conda deactivate && conda activate {YOUR_CONDA_ENV}
+    # 3) Set PROJECT_PATH of Conda environment
+    conda env config vars set PROJECT_PATH={YOUR_PROJECT_PATH} && conda deactivate && conda activate {YOUR_CONDA_ENV}
 
-# 4) For GPT fine tuning
+    # 4) For GPT fine tuning
 
-pip install "trl>=0.20.0" "peft>=0.17.0" "transformers>=4.55.0" trackio
-pip install -U flash-attn
+    pip install "trl>=0.20.0" "peft>=0.17.0" "transformers>=4.55.0" trackio
+    pip install -U flash-attn
 
-#Optional: login hugging face
-from huggingface_hub import notebook_login
-notebook_login()
-```
+    #Optional: login hugging face
+    from huggingface_hub import notebook_login
+    notebook_login()
+    ```
 
-3. **KiCad v8 installed**
+</detail>
+
+3. <detail>
+    <summary> KiCad v8 installed </summary>
 
     Install version 8.0.9 from [Github KiCad releases](https://github.com/KiCad/kicad-source-mirror/releases) 
 
@@ -109,6 +113,8 @@ notebook_login()
    wget https://github.com/freerouting/freerouting/releases/download/v2.1.0/freerouting-2.1.0.jar
    ```
    Then configure the `freerouting_jar_path` and `freerouting_plugin_path` in `./config.py`.
+
+   </detail>
 
 ### Tests
 
