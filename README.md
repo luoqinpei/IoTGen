@@ -38,7 +38,7 @@ series = {MobiSys '26}
 
 2. **Python Environment**
     <details>
-    <summary> Instruction </summary>
+    <summary> Instructions </summary>
     
     (1) Set up a python virtual environment (Python 3.10 and Conda suggested) for the project. You can refer to the [Tutorial](https://code.visualstudio.com/docs/python/environments).
 
@@ -86,7 +86,7 @@ series = {MobiSys '26}
 
 3. **KiCad v8 installed**
     <details>
-    <summary> Instruction </summary>
+    <summary> Instructions </summary>
 
     Install version 8.0.9 from [Github KiCad releases](https://github.com/KiCad/kicad-source-mirror/releases) 
 
