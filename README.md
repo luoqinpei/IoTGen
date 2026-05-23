@@ -84,7 +84,7 @@ series = {MobiSys '26}
 
 </details>
 
-3. **KiCad v8 installation**
+3. **KiCad v8 Installation**
     <details>
     <summary> Instructions </summary>
 
