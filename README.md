@@ -36,7 +36,7 @@ series = {MobiSys '26}
 
     **OpenRouter**: In the ``./config.py``, replace the variable of ``openrouter_api_key`` with your own API key.
 
-2. <detail>
+2. <details>
     <summary> Python Environment </summary>
     
     (1) Set up a python virtual environment (Python 3.10 and Conda suggested) for the project. You can refer to the [Tutorial](https://code.visualstudio.com/docs/python/environments).
@@ -81,7 +81,7 @@ series = {MobiSys '26}
     notebook_login()
     ```
 
-</detail>
+</details>
 
 3. <details>
     <summary> KiCad v8 installed </summary>
