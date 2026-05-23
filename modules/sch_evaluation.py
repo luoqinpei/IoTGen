@@ -70,49 +70,6 @@ class SchematicVerifier():
 
         return compare_netlists_sets(standard_netlist, netlist)
 
-
-class LLM_judge():
-    def __init__(self, module_name, schematic_name):
-
-        self.logger = setup_logger()
-        self.logger.info(f"Initializing SchematicVerifier ")
-        self.module_name = module_name
-        self.schematic_name = schematic_name
-
-
-    def verify(self, schematic_path = None, user_request=None) -> str:
-        """
-        Verify the schematic netlist and compare it with the standard output
-        """
-        
-        # Get the netlist for the schematic
-        if schematic_path == None:
-            netlist = get_schematic_netlist()
-        else:
-            netlist = get_schematic_netlist(schematic_path)
-
-        sch_img = get_sch_with_axes(image_name=f"sch_with_axes_{self.module_name}_{schematic_path.stem}.png", schematic_path=schematic_path)
-
-        system_prompt = f"You are a schematic verification expert. Given the schematic image and netlist of the generated schematic. Identify if it satisfies the user request."
-
-        user_prompt = (
-            f"You are given the following user request:\n{user_request}\n"
-            f"The schematic netlist is:\n{netlist}\n"
-            f"The schematic image is provided as an attachment.\n"
-            f"Please analyze the schematic and determine if it meets the user request. "
-            f"Provide an explanation of your reasoning, and determine if the schematic satisfies the request. Please be tolerant."
-        )
-
-        msg_list = [
-            {"role": "system", "content": system_prompt},
-        ]
-
-        img_prompt = judge_llm.prepare_input_with_image(user_prompt, sch_img)
-        msg_list.append(img_prompt[0])
-        response, response_obj = judge_llm.get_json_response_retry(msg_list, LLMJudgeDef)
-
-        return response, response_obj
-
     
 
 KICAD_SCH_INIT = """(kicad_sch
@@ -203,59 +160,6 @@ def evaluation(data, code_path, code):
     evaluation["errors"] = errors
 
     return evaluation
-
-def llm_judge(data, code_path, code, user_request):
-
-    module_name, schematic_name, meta = extract_meta_info(data)
-    # Execute the code
-    target_kicad = Path(project_path) / "export" / "test.kicad_sch"
-    write_kicad_sch(target_kicad)
-    print(f"[INFO] Initialized KiCad schematic of {module_name}/{schematic_name}")
-    errors = 0
-    try:
-        filename = code_path  # keep your original filename for better traceback
-        compiled = compile(code, filename, "exec")
-        exec_globals: Dict[str, Any] = {}
-
-        sys.modules.pop("modules.kicad_sch_interface", None)  # clear cached module to reset state
-
-        exec_globals: Dict[str, Any] = {
-            "__name__": "__main__",
-            "__file__": filename,
-        }
-
-        # capture both stdout and stderr during execution
-        buf_out = io.StringIO()
-        buf_err = io.StringIO()
-        with redirect_stdout(buf_out), redirect_stderr(buf_err):
-            exec(compiled, exec_globals)
-
-        # collect outputs
-        out_text = buf_out.getvalue()
-        err_text = buf_err.getvalue()
-        combined = out_text + ("\n" if out_text and err_text else "") + err_text
-
-        # count "second-class errors": lines that contain "error" (case-insensitive)
-        # You can choose word-boundary matching; here we do a simple per-line contains to be more permissive.
-        errors += sum(1 for line in combined.splitlines() if "error" in line.lower())
-
-        if combined.strip():
-            # optional: print combined output, or keep it for logs
-            print(combined)
-
-    except Exception as e:
-        print(f"[ERROR] Exception during assistant code execution: {type(e).__name__}: {e}", file=sys.stderr)
-        tb = traceback.format_exc()
-        print(tb, file=sys.stderr)
-        return {"passed": 0}
-
-    # After execution, you can report the count:
-
-    judger = LLM_judge(module_name, schematic_name)
-    
-    response, response_obj = judger.verify(schematic_path=target_kicad, user_request=user_request)
-
-    return response, response_obj
 
 if __name__ == "__main__":
     

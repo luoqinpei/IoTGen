@@ -228,6 +228,8 @@ If necessary, users can revise the request or manually modify the generated sche
 
 ### 3. PCB Agentic Layout
 
+![Layout Agent](./assets/layout_agent.png)
+
 Specify the project path and project name (KiCad schematic and PCB names). You can also specify the model name and provider, although they are already set with default values in ``PCB_Agentic_Layout/layout_agent.py``. The agentic layout can be executed with the following command:
 
 ```

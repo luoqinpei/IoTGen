@@ -21,6 +21,8 @@ from difflib import SequenceMatcher
 import uuid
 from pathlib import Path
 
+import re
+
 def append_kicad_wire_raw(sch_path, start_pos, end_pos):
     p = Path(sch_path)
     txt = p.read_text(encoding="utf-8")
@@ -39,14 +41,14 @@ def append_kicad_wire_raw(sch_path, start_pos, end_pos):
     )
 '''
 
-    marker = "\n    (sheet_instances"
-    if marker not in txt:
-        marker = "\n\t(sheet_instances"
-
-    if marker not in txt:
+    # Match "(sheet_instances" with any whitespace before it.
+    m = re.search(r'\s*\(sheet_instances\b', txt)
+    if not m:
         raise RuntimeError("Cannot find top-level sheet_instances insertion point.")
 
-    txt = txt.replace(marker, wire_text + marker, 1)
+    insert_pos = m.start()
+    txt = txt[:insert_pos] + "\n" + wire_text + "\n" + txt[insert_pos:]
+
     p.write_text(txt, encoding="utf-8")
 
 def _normalize_sym(s: str) -> str:
@@ -75,7 +77,7 @@ def _all_symbols_from_lib_tree(project_path: str) -> List[str]:
     if project_path in _ALL_SYMBOLS_CACHE:
         return _ALL_SYMBOLS_CACHE[project_path]
 
-    lib_tree_path = Path(project_path) / "modules" / "lib_tree.json"
+    lib_tree_path = Path(project_path) / "modules" / "component_repository.json"
     data: Dict[str, Any] = json.loads(lib_tree_path.read_text(encoding="utf-8"))
 
     symbols: List[str] = []
@@ -128,7 +130,7 @@ def best_symbol_name_from_lib_tree(
 ) -> Optional[str]:
     """
     Input:  symbol_name (pure, e.g., "C", "Conn_01x02", "R_Array_4")
-    Output: best matching symbol_name that exists in lib_tree.json
+    Output: best matching symbol_name that exists in component_repository.json
 
     If exact match exists, returns immediately.
     Else fuzzy match and return best candidate if its score >= min_score.
@@ -185,7 +187,7 @@ def _build_symbol_to_lib_index() -> Dict[str, str]:
     Ignores the first two hierarchy levels.
     First match wins if a symbol_name appears multiple times.
     """
-    lib_tree_path = Path(project_path) / "modules" / "lib_tree.json"
+    lib_tree_path = Path(project_path) / "modules" / "component_repository.json"
     data: Dict[str, Any] = json.loads(lib_tree_path.read_text(encoding="utf-8"))
 
     symbol_to_lib: Dict[str, str] = {}
@@ -281,18 +283,18 @@ def add_schematic_symbol(symbol_lib="RF_Module", symbol_name="ESP-WROOM-02", pos
     else:
         mirror_val = None
 
-    # --- resolve symbol_name from lib_tree.json (more robust) ---
+    # --- resolve symbol_name from component_repository.json (more robust) ---
     symbol_name = best_symbol_name_from_lib_tree(symbol_name=symbol_name, project_path=project_path) or symbol_name
 
-    # --- resolve symbol_lib from lib_tree.json (more robust) ---
+    # --- resolve symbol_name from component_repository.json (more robust) ---
     resolved_lib = _resolve_symbol_lib(symbol_name)
     if resolved_lib is not None:
         if resolved_lib != symbol_lib:
-            print(f"Info: symbol_name='{symbol_name}' found in lib_tree.json, using symbol_lib='{resolved_lib}' instead of provided symbol_lib='{symbol_lib}'.")
+            print(f"Info: symbol_name='{symbol_name}' found in component_repository.json, using symbol_lib='{resolved_lib}' instead of provided symbol_lib='{symbol_lib}'.")
             symbol_lib = resolved_lib
     else:
         # keep user-provided symbol_lib as fallback
-        print(f"Warning: symbol_name='{symbol_name}' not found in lib_tree.json. "
+        print(f"Warning: symbol_name='{symbol_name}' not found in component_repository.json. "
               f"Falling back to provided symbol_lib='{symbol_lib}'.")
 
     # Example: Add a symbol to a schematic
