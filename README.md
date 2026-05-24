@@ -353,4 +353,4 @@ IoTGen is intended for rapid prototyping and research purposes, and does not gua
 
 ## License
 
-This project is released under the MIT License.
+This project is released under the Apache-2.0 License.
